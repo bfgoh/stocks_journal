@@ -1,0 +1,6 @@
+*_creds.json
+*token*.json
+*credentials.json
+.venv
+*.pyc
+*.csv
