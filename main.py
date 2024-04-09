@@ -34,10 +34,14 @@ if __name__ == "__main__":
                 for msgPayload in messageDetailPayload["parts"]:
                     file_name = msgPayload["filename"]
                     body = msgPayload["body"]
-                    if "attachmentId" in body and "DayTrade" in file_name:
+                    if "attachmentId" in body:
                         attachment_id = body["attachmentId"]
                         attachment_content = get_file_data(
-                            email_message["id"], attachment_id, file_name, save_location
+                            service,
+                            email_message["id"],
+                            attachment_id,
+                            file_name,
+                            save_location,
                         )
                         csv_file_path = os.path.join(save_location, file_name)
                         with open(file=csv_file_path, mode="wb") as _f:
