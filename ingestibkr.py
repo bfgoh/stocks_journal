@@ -74,7 +74,11 @@ def process_existing_entries(trading_journal_entries):
 
 
 def concat_new_entries(existing_entries, new_trades_entries):
-    new_trades_entries = new_trades_entries.drop(["Header"], axis=1)
+    existing_columns = existing_entries.columns
+    new_entries_columns = [
+        column for column in new_trades_entries.columns if column in existing_columns
+    ]
+    new_trades_entries = new_trades_entries.loc[:, new_entries_columns]
     updated_entries = pd.concat([existing_entries, new_trades_entries], axis=0)
     return updated_entries
 
@@ -126,7 +130,6 @@ def main(csv_file_path):
         gsw = GspreadWriter()
         gc = gsw.authenticate_gspread()
         trading_journal_sh = gc.open_by_url(trading_journal_url)
-        # TODO: Put URL and sheetname into config file
         trading_journal_entries = trading_journal_sh.worksheet("Sheet13")
         existing_entries = process_existing_entries(trading_journal_entries)
         updated_entries = concat_new_entries(existing_entries, trades_entries)
