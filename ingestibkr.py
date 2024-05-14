@@ -105,10 +105,14 @@ def clean_entries(existing_entries):
         ["Asset Category", "Symbol", "Date/Time", "columns_filled"],
         ascending=[True, True, True, False],
     )
+    before_cleaning_length = len(existing_entries)
     existing_entries = existing_entries.drop_duplicates(
         subset=["Asset Category", "Symbol", "Date/Time"], keep="first"
     )
     existing_entries = existing_entries.drop(["columns_filled"], axis=1)
+    after_cleaning_length = len(existing_entries)
+    if before_cleaning_length != after_cleaning_length:
+        print("Unclean Entries Removed")
     return existing_entries
 
 
@@ -119,6 +123,7 @@ def main(csv_file_path):
 
     if "Trades" in csv_sectioned.keys():
         trades = csv_sectioned["Trades"]
+        print(f"Processing: {csv_file_path}")
         trades = process_trades_section(trades)
 
         trades_entries = trades[trades["DataDiscriminator"] == "Order"]
