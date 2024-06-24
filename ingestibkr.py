@@ -50,13 +50,16 @@ def process_trades_section(trades):
     trades["Date/Time"] = trades["Date/Time"].dt.tz_localize("EST")
     trades["Date"] = trades["Date/Time"].dt.date
     trades["Date"] = trades["Date"].ffill()
-    trades[
-        ["Quantity", "T. Price", "Proceeds", "Comm/Fee", "Basis", "Realized P/L"]
-    ] = pd.to_numeric(
-        trades[
-            ["Quantity", "T. Price", "Proceeds", "Comm/Fee", "Basis", "Realized P/L"]
-        ].stack()
-    ).unstack()
+    numeric_columns = [
+        "Quantity",
+        "T. Price",
+        "Proceeds",
+        "Comm/Fee",
+        "Basis",
+        "Realized P/L",
+    ]
+    trades[numeric_columns] = trades[numeric_columns].replace(",", "", regex=True)
+    trades[numeric_columns] = pd.to_numeric(trades[numeric_columns].stack()).unstack()
     return trades
 
 
